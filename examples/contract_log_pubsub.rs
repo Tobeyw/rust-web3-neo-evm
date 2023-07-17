@@ -1,23 +1,23 @@
 use hex_literal::hex;
 use std::time;
-use web3::{
+use neo_web3::{
     contract::{Contract, Options},
     futures::{future, StreamExt},
     types::FilterBuilder,
 };
 
 #[tokio::main]
-async fn main() -> web3::contract::Result<()> {
+async fn main() -> neo_web3::contract::Result<()> {
     let _ = env_logger::try_init();
-    let web3 = web3::Web3::new(web3::transports::WebSocket::new("ws://localhost:8546").await?);
+    let neo_web3 = neo_web3::Web3::new(neo_web3::transports::WebSocket::new("ws://localhost:8546").await?);
 
     // Get the contract bytecode for instance from Solidity compiler
     let bytecode = include_str!("./res/SimpleEvent.bin");
 
-    let accounts = web3.eth().accounts().await?;
+    let accounts = neo_web3.eth().accounts().await?;
     println!("accounts: {:?}", &accounts);
 
-    let contract = Contract::deploy(web3.eth(), include_bytes!("./res/SimpleEvent.abi"))?
+    let contract = Contract::deploy(neo_web3.eth(), include_bytes!("./res/SimpleEvent.abi"))?
         .confirmations(1)
         .poll_interval(time::Duration::from_secs(10))
         .options(Options::with(|opt| opt.gas = Some(3_000_000.into())))
@@ -39,7 +39,7 @@ async fn main() -> web3::contract::Result<()> {
         )
         .build();
 
-    let sub = web3.eth_subscribe().subscribe_logs(filter).await?;
+    let sub = neo_web3.eth_subscribe().subscribe_logs(filter).await?;
 
     let tx = contract.call("hello", (), accounts[0], Options::default()).await?;
     println!("got tx: {:?}", tx);

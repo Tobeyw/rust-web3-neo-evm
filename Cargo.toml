@@ -1,9 +1,9 @@
 [package]
-name = "web3"
-version = "0.19.0"
-description = "Ethereum JSON-RPC client."
-homepage = "https://github.com/tomusdrw/rust-web3"
-repository = "https://github.com/tomusdrw/rust-web3"
+name = "neo-web3"
+version = "0.1.0"
+description = "Neo EVM JSON-RPC client."
+homepage = "https://github.com/Tobeyw/rust-web3-neo-evm.git"
+repository = "https://github.com/Tobeyw/rust-web3-neo-evm.git"
 documentation = "https://docs.rs/web3"
 license = "MIT"
 keywords = ["jsonrpc", "web3", "ethereum", "rpc", "client"]

@@ -1,6 +1,12 @@
+/*
+ * @Descripttion: 
+ * @version: 
+ * @Author: Mindy
+ * @Date: 2023-07-17 11:07:12
+ */
 use std::str::FromStr;
 
-use web3::{
+use neo_web3::{
     ethabi::ethereum_types::U256,
     signing::SecretKey,
     types::{Address, TransactionParameters},
@@ -9,11 +15,11 @@ use web3::{
 /// Below generates and signs a transaction offline, before transmitting it to a public node (eg Infura)
 /// For sending a transaction to a local node that stores private keys (eg Ganache) see transaction_private
 #[tokio::main]
-async fn main() -> web3::Result {
+async fn main() -> neo_web3::Result {
     // Sign up at infura > choose the desired network (eg Rinkeby) > copy the endpoint url into the below
     // If you need test ether use a faucet, eg https://faucet.rinkeby.io/
-    let transport = web3::transports::Http::new("https://rinkeby.infura.io/v3/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")?;
-    let web3 = web3::Web3::new(transport);
+    let transport = neo_web3::transports::Http::new("https://rinkeby.infura.io/v3/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")?;
+    let neo_web3 = neo_web3::Web3::new(transport);
 
     // Insert the 20-byte "to" address in hex format (prefix with 0x)
     let to = Address::from_str("0xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX").unwrap();
@@ -29,10 +35,10 @@ async fn main() -> web3::Result {
     };
 
     // Sign the tx (can be done offline)
-    let signed = web3.accounts().sign_transaction(tx_object, &prvk).await?;
+    let signed = neo_web3.accounts().sign_transaction(tx_object, &prvk).await?;
 
     // Send the tx to infura
-    let result = web3.eth().send_raw_transaction(signed.raw_transaction).await?;
+    let result = neo_web3.eth().send_raw_transaction(signed.raw_transaction).await?;
 
     println!("Tx succeeded with hash: {}", result);
 

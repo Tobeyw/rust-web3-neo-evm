@@ -1,3 +1,9 @@
+/*
+ * @Descripttion: 
+ * @version: 
+ * @Author: Mindy
+ * @Date: 2023-07-17 11:07:12
+ */
 use parking_lot::Mutex;
 use std::{
     sync::{atomic, Arc},
@@ -5,32 +11,32 @@ use std::{
 };
 
 #[tokio::main]
-async fn main() -> web3::Result {
+async fn main() -> neo_web3::Result {
     let _ = env_logger::try_init();
     let requests = 200_000;
 
-    let http = web3::transports::Http::new("http://localhost:8545/")?;
+    let http = neo_web3::transports::Http::new("http://localhost:8545/")?;
     bench("http", http, requests);
 
-    let ipc = web3::transports::WebSocket::new("./jsonrpc.ipc").await?;
+    let ipc = neo_web3::transports::WebSocket::new("./jsonrpc.ipc").await?;
     bench(" ipc", ipc, requests);
 
     Ok(())
 }
 
-fn bench<T: web3::Transport>(id: &str, transport: T, max: usize)
+fn bench<T: neo_web3::Transport>(id: &str, transport: T, max: usize)
 where
     T::Out: Send + 'static,
 {
     use futures::FutureExt;
 
-    let web3 = web3::Web3::new(transport);
+    let neo_web3 = neo_web3::Web3::new(transport);
     let ticker = Arc::new(Ticker::new(id));
 
     for _ in 0..max {
         let ticker = ticker.clone();
         ticker.start();
-        let accounts = web3.eth().block_number().then(move |res| {
+        let accounts = neo_web3.eth().block_number().then(move |res| {
             if let Err(e) = res {
                 println!("Error: {:?}", e);
             }
