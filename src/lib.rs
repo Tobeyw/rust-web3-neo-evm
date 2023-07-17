@@ -57,6 +57,7 @@ pub trait Transport: std::fmt::Debug + Clone {
     /// Execute remote method with given parameters.
     fn execute(&self, method: &str, params: Vec<rpc::Value>) -> Self::Out {
         let (id, request) = self.prepare(method, params);
+        println!("test: {:?}", request);
         self.send(id, request)
     }
 }

@@ -4,22 +4,33 @@
  * @Author: Mindy
  * @Date: 2023-07-17 11:07:12
  */
+use crate::types::H256;
 use parking_lot::Mutex;
+
 use std::{
     sync::{atomic, Arc},
     thread, time,
+
 };
 
 #[tokio::main]
 async fn main() -> neo_web3::Result {
-    let _ = env_logger::try_init();
-    let requests = 200_000;
 
-    let http = neo_web3::transports::Http::new("http://localhost:8545/")?;
-    bench("http", http, requests);
+    //================================================================
+    // let _ = env_logger::try_init();
+    // let requests = 200_000;
 
-    let ipc = neo_web3::transports::WebSocket::new("./jsonrpc.ipc").await?;
-    bench(" ipc", ipc, requests);
+    // let http = neo_web3::transports::Http::new("http://localhost:8545/")?;
+    // bench("http", http, requests);
+
+    // let ipc = neo_web3::transports::WebSocket::new("./jsonrpc.ipc").await?;
+    // bench(" ipc", ipc, requests);
+    //================================================================
+    let transport = neo_web3::transports::Http::new("http://20.169.201.3:20332")?;
+    let web3 = neo_web3::Web3::new(transport);
+    let transaction_hash = "0xdcbfb721ab74ae7ff0e6f3371716b454529211171f0a58fe19533bedf225fedb".parse::<H256>().unwrap();
+    let result =  web3.eth().transaction_receipt(transaction_hash).await;
+    println!("tx receipt :{:?}",result);
 
     Ok(())
 }
