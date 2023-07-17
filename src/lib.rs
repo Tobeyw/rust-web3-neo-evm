@@ -44,7 +44,9 @@ pub type RequestId = usize;
 // TODO [ToDr] The transport most likely don't need to be thread-safe.
 // (though it has to be Send)
 /// Transport implementation
-pub trait Transport: std::fmt::Debug + Clone {
+/// 
+
+pub trait Transport: std::fmt::Debug + Clone{
     /// The type of future this transport returns when a call is made.
     type Out: futures::Future<Output = error::Result<rpc::Value>>;
 
@@ -56,10 +58,10 @@ pub trait Transport: std::fmt::Debug + Clone {
 
     /// Execute remote method with given parameters.
     fn execute(&self, method: &str, params: Vec<rpc::Value>) -> Self::Out {
-        let (id, request) = self.prepare(method, params);
-        println!("test: {:?}", request);
-        self.send(id, request)
+       let (id, request) = self.prepare(method, params);       
+       self.send(id, request)
     }
+    // fn display(&self) -> self::out { self.out }
 }
 
 /// A transport implementation supporting batch requests.
@@ -90,7 +92,7 @@ where
     T: Transport + ?Sized,
     X: std::ops::Deref<Target = T>,
     X: std::fmt::Debug,
-    X: Clone,
+    X: Clone,  
 {
     type Out = T::Out;
 
@@ -109,7 +111,7 @@ where
     X: std::ops::Deref<Target = T>,
     X: std::fmt::Debug,
     X: Clone,
-{
+   {
     type Batch = T::Batch;
 
     fn send_batch<I>(&self, requests: I) -> Self::Batch
@@ -145,6 +147,7 @@ mod tests {
     use crate::api::Web3;
     use futures::future::BoxFuture;
     use std::sync::Arc;
+    use core::fmt::Display;
 
     #[derive(Debug, Clone)]
     struct FakeTransport;
@@ -159,7 +162,8 @@ mod tests {
         fn send(&self, _id: RequestId, _request: rpc::Call) -> Self::Out {
             unimplemented!()
         }
-    }
+     
+}
 
     #[test]
     fn should_allow_to_use_arc_as_transport() {

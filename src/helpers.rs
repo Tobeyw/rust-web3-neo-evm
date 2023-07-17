@@ -7,7 +7,7 @@ use futures::{
 };
 use pin_project::pin_project;
 use serde::de::DeserializeOwned;
-use std::{marker::PhantomData, pin::Pin};
+use std::{marker::PhantomData, pin::Pin, sync::Arc};
 
 /// Takes any type which is deserializable from rpc::Value and such a value and
 /// yields the deserialized value
@@ -26,7 +26,7 @@ pub struct CallFuture<T, F> {
 
 impl<T, F> CallFuture<T, F> {
     /// Create a new CallFuture wrapping the inner future.
-    pub fn new(inner: F) -> Self {
+    pub fn new(inner: F) -> Self {      
         CallFuture {
             inner,
             _marker: PhantomData,
@@ -99,9 +99,14 @@ pub fn to_results_from_outputs(outputs: Vec<rpc::Output>) -> error::Result<Vec<e
 
 /// Parse `rpc::Output` into `Result`.
 pub fn to_result_from_output(output: rpc::Output) -> error::Result<rpc::Value> {
+  println!("test==== {:?}", output);
     match output {
-        rpc::Output::Success(success) => Ok(success.result),
-        rpc::Output::Failure(failure) => Err(error::Error::Rpc(failure.error)),
+        rpc::Output::Success(success) =>{
+          println!("success=====");
+          Ok(success.result)} ,
+        rpc::Output::Failure(failure) =>{
+          println!("error===");
+          Err(error::Error::Rpc(failure.error))} ,
     }
 }
 

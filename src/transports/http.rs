@@ -74,6 +74,7 @@ impl Http {
 
 // Id is only used for logging.
 async fn execute_rpc<T: DeserializeOwned>(client: &Client, url: Url, request: &Request, id: RequestId) -> Result<T> {
+    println!("Executing");
     log::debug!("[id:{}] sending request: {:?}", id, serde_json::to_string(&request)?);
     let response = client
         .post(url)
@@ -93,6 +94,8 @@ async fn execute_rpc<T: DeserializeOwned>(client: &Client, url: Url, request: &R
         id,
         String::from_utf8_lossy(&response)
     );
+    println!("[id:{}] received response: {:?}", id,response);
+    println!("test status: {:?}", status.is_success());
     if !status.is_success() {
         return Err(Error::Transport(TransportError::Code(status.as_u16())));
     }
@@ -116,10 +119,10 @@ impl Transport for Http {
         (id, request)
     }
 
-    fn send(&self, id: RequestId, call: Call) -> Self::Out {
+    fn send(&self, id: RequestId, call: Call) -> Self::Out {       
         let (client, url) = self.new_request();
         Box::pin(async move {
-            let output: Output = execute_rpc(&client, url, &Request::Single(call), id).await?;
+            let output: Output = execute_rpc(&client, url, &Request::Single(call), id).await?;           
             helpers::to_result_from_output(output)
         })
     }

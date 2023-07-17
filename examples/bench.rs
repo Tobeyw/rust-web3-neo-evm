@@ -4,7 +4,9 @@
  * @Author: Mindy
  * @Date: 2023-07-17 11:07:12
  */
-use crate::types::H256;
+use neo_web3::{   
+    types::H256,
+};
 use parking_lot::Mutex;
 
 use std::{

@@ -212,7 +212,7 @@ impl<T: Transport> Eth<T> {
     pub fn transaction_count(&self, address: Address, block: Option<BlockNumber>) -> CallFuture<U256, T::Out> {
         let address = helpers::serialize(&address);
         let block = helpers::serialize(&block.unwrap_or(BlockNumber::Latest));
-
+       
         CallFuture::new(self.transport.execute("eth_getTransactionCount", vec![address, block]))
     }
 
@@ -242,8 +242,8 @@ impl<T: Transport> Eth<T> {
 
     /// Get transaction receipt
     pub fn transaction_receipt(&self, hash: H256) -> CallFuture<Option<TransactionReceipt>, T::Out> {
-        let hash = helpers::serialize(&hash);
-
+        let hash = helpers::serialize(&hash);    
+ 
         CallFuture::new(self.transport.execute("eth_getTransactionReceipt", vec![hash]))
     }
 
